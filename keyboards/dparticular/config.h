@@ -4,12 +4,12 @@
 #include "config_common.h"
 
 /* USB Device descriptor parameter */
-#define VENDOR_ID       0xFEED
+#define VENDOR_ID       0x6666
 #define PRODUCT_ID      0x6060
 #define DEVICE_VER      0x0001
-#define MANUFACTURER    qmkbuilder
-#define PRODUCT         keyboard
-#define DESCRIPTION     Keyboard
+#define MANUFACTURER    Black Sheep
+#define PRODUCT         DParticular
+#define DESCRIPTION     One-Piece Split Column-Staggered Keyboard
 
 /* key matrix size */
 #define MATRIX_ROWS 7
