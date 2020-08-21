@@ -21,9 +21,9 @@
 #define MATRIX_ROW_PINS { C7, C6, B7, B3, B2, B1, B0 }
 #define MATRIX_COL_PINS { F0, F1, F4, F5, F6, F7, B6, B5 }
 
-#define E_PIN(REG, PIN_NO) ((REG << 4) | PIN_NO)
-#define E_REG(PIN) (PIN >> 4)
-#define E_PIN_NO(PIN) (PIN & 0xf)
+#define E_PIN(REG, PIN_NO) (((REG) << 4) | (PIN_NO))
+#define E_REG(PIN) ((PIN) >> 4)
+#define E_PIN_NO(PIN) ((PIN) & 0xf)
 
 #define E_A 0
 #define E_B 1
