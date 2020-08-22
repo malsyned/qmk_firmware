@@ -40,6 +40,7 @@ OPT_DEFS += -DINTERRUPT_CONTROL_ENDPOINT
 # Boot Section Size in *bytes*
 OPT_DEFS += -DBOOTLOADER_SIZE=512
 
+BOOTLOADER = halfkay
 
 # Build Options
 #   comment out to disable the options.
