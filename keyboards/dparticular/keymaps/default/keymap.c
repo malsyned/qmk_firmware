@@ -156,6 +156,32 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 };
 
+// Light LEDs 9 & 10 in cyan when keyboard layer 1 is active
+static const rgblight_segment_t PROGMEM numlock_layer[] = RGBLIGHT_LAYER_SEGMENTS(
+    {0, 1, HSV_RED}
+);
+static const rgblight_segment_t PROGMEM capslock_layer[] = RGBLIGHT_LAYER_SEGMENTS(
+    {1, 1, HSV_RED}
+);
+// Light LEDs 11 & 12 in purple when keyboard layer 2 is active
+static const rgblight_segment_t PROGMEM scrlock_layer[] = RGBLIGHT_LAYER_SEGMENTS(
+    {2, 1, HSV_RED}
+);
+
+#define L_NUMLOCK 0
+#define L_CAPSLOCK 1
+#define L_SCRLOCK 2
+
+static const rgblight_segment_t* const PROGMEM led_layers[] = RGBLIGHT_LAYERS_LIST(
+    [L_NUMLOCK] = numlock_layer,
+    [L_CAPSLOCK] = capslock_layer,
+    [L_SCRLOCK] = scrlock_layer
+);
+
+void keyboard_post_init_user(void) {
+    rgblight_layers = led_layers;
+}
+
 const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
 	/* keyevent_t event = record->event; */
 
@@ -175,36 +201,10 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 	return true;
 }
 
-void led_set_user(uint8_t usb_led) {
-
-	if (usb_led & (1 << USB_LED_NUM_LOCK)) {
-		
-	} else {
-		
-	}
-
-	if (usb_led & (1 << USB_LED_CAPS_LOCK)) {
-		
-	} else {
-		
-	}
-
-	if (usb_led & (1 << USB_LED_SCROLL_LOCK)) {
-		
-	} else {
-		
-	}
-
-	if (usb_led & (1 << USB_LED_COMPOSE)) {
-		
-	} else {
-		
-	}
-
-	if (usb_led & (1 << USB_LED_KANA)) {
-		
-	} else {
-		
-	}
-
+bool led_update_user(led_t led_state) {
+    rgblight_disable();
+    rgblight_set_layer_state(L_NUMLOCK, led_state.num_lock);
+    rgblight_set_layer_state(L_CAPSLOCK, led_state.caps_lock);
+    rgblight_set_layer_state(L_SCRLOCK, led_state.scroll_lock);
+    return true;
 }
