@@ -38,8 +38,13 @@
 
 // WS2812 specific layout
 typedef struct PACKED {
+#ifdef WS2812_SWAP_RG
+    uint8_t r;
+    uint8_t g;
+#else
     uint8_t g;
     uint8_t r;
+#endif
     uint8_t b;
 } cRGB;
 
