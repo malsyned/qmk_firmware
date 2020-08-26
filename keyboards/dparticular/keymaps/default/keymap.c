@@ -23,9 +23,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 		                                        KC_TRNS,KC_TRNS         /**/         ,KC_TRNS,KC_TRNS,
 		KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS         /**/         ,KC_TRNS,KC_TRNS,KC_TRNS,KC_MUTE,KC_VOLD,KC_VOLU,KC_TRNS,
 		KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS /**/ ,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,
-		    KC_TRNS    ,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS /**/ ,KC_TRNS,KC_TRNS,KC_UP  ,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,
-		    KC_TRNS    ,KC_CAPS,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS /**/ ,KC_TRNS,KC_LEFT,KC_DOWN,KC_RGHT,KC_TRNS,KC_TRNS,KC_TRNS,
-		                KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS /**/ ,TG_NUM ,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,
+		    KC_TRNS    ,KC_TRNS,RGB_HUD,RGB_HUI,KC_TRNS,KC_TRNS,KC_TRNS /**/ ,KC_TRNS,KC_TRNS,KC_UP  ,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,
+		    KC_TRNS    ,KC_CAPS,RGB_SAD,RGB_SAI,KC_TRNS,KC_TRNS,KC_TRNS /**/ ,KC_TRNS,KC_LEFT,KC_DOWN,KC_RGHT,KC_TRNS,KC_TRNS,KC_TRNS,
+		                KC_TRNS,RGB_VAD,RGB_VAI,KC_TRNS,KC_TRNS,KC_TRNS /**/ ,TG_NUM ,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,
 		                KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS /**/ ,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS),
 
 	[LAYER_NUM] = KEYMAP(
@@ -156,31 +156,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 };
 
-#define MY_GREEN 85, 255, 128
-
-static const rgblight_segment_t PROGMEM numlock_layer[] = RGBLIGHT_LAYER_SEGMENTS(
-    {0, 1, MY_GREEN}
-);
-static const rgblight_segment_t PROGMEM capslock_layer[] = RGBLIGHT_LAYER_SEGMENTS(
-    {1, 1, MY_GREEN}
-);
-// Light LEDs 11 & 12 in purple when keyboard layer 2 is active
-static const rgblight_segment_t PROGMEM scrlock_layer[] = RGBLIGHT_LAYER_SEGMENTS(
-    {2, 1, MY_GREEN}
-);
-
-#define L_NUMLOCK 0
-#define L_CAPSLOCK 1
-#define L_SCRLOCK 2
-
-static const rgblight_segment_t* const PROGMEM led_layers[] = RGBLIGHT_LAYERS_LIST(
-    [L_NUMLOCK] = numlock_layer,
-    [L_CAPSLOCK] = capslock_layer,
-    [L_SCRLOCK] = scrlock_layer
-);
-
 void keyboard_post_init_user(void) {
-    rgblight_layers = led_layers;
+    rgblight_enable();
 }
 
 const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
@@ -203,9 +180,19 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 }
 
 bool led_update_user(led_t led_state) {
-    rgblight_disable();
-    rgblight_set_layer_state(L_NUMLOCK, led_state.num_lock);
-    rgblight_set_layer_state(L_CAPSLOCK, led_state.caps_lock);
-    rgblight_set_layer_state(L_SCRLOCK, led_state.scroll_lock);
+    bool states[] = {
+        led_state.num_lock,
+        led_state.caps_lock,
+        led_state.scroll_lock
+    };
+    uint8_t hue = rgblight_get_hue();
+    uint8_t sat = rgblight_get_sat();
+    uint8_t val = rgblight_get_val();
+
+    for (int i = 0; i < 3; i++) {
+        sethsv(hue, sat, states[i] ? val : val / 8, led + i);
+    }
+    rgblight_set();
+
     return true;
 }
