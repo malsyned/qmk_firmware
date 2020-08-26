@@ -156,16 +156,17 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 };
 
-// Light LEDs 9 & 10 in cyan when keyboard layer 1 is active
+#define MY_GREEN 85, 255, 128
+
 static const rgblight_segment_t PROGMEM numlock_layer[] = RGBLIGHT_LAYER_SEGMENTS(
-    {0, 1, HSV_RED}
+    {0, 1, MY_GREEN}
 );
 static const rgblight_segment_t PROGMEM capslock_layer[] = RGBLIGHT_LAYER_SEGMENTS(
-    {1, 1, HSV_RED}
+    {1, 1, MY_GREEN}
 );
 // Light LEDs 11 & 12 in purple when keyboard layer 2 is active
 static const rgblight_segment_t PROGMEM scrlock_layer[] = RGBLIGHT_LAYER_SEGMENTS(
-    {2, 1, HSV_RED}
+    {2, 1, MY_GREEN}
 );
 
 #define L_NUMLOCK 0
