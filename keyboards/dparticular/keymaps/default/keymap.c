@@ -205,9 +205,11 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 	return true;
 }
 
-bool led_update_user(led_t led_state) {
+
+static void update_leds(led_t led_state, bool num_layer_on)
+{
     bool states[] = {
-        led_state.num_lock,
+        num_layer_on,
         led_state.caps_lock,
         led_state.scroll_lock
     };
@@ -219,6 +221,24 @@ bool led_update_user(led_t led_state) {
         sethsv(hue, sat, states[i] ? val : val / 8, led + i);
     }
     rgblight_set();
+}
+
+bool led_update_user(led_t led_state) {
+    update_leds(led_state, IS_LAYER_ON(LAYER_NUM));
 
     return true;
+}
+
+layer_state_t layer_state_set_user(layer_state_t state) {
+    static bool num_layer_prev = false;
+    bool num_layer_rising =
+        !num_layer_prev && IS_LAYER_ON_STATE(state, LAYER_NUM);
+    led_t led_state = host_keyboard_led_state();
+
+    if (num_layer_rising && !led_state.num_lock) {
+        SEND_STRING(SS_DOWN(X_NUMLOCK) SS_DELAY(100) SS_UP(X_NUMLOCK));
+        update_leds(led_state, true);
+    }
+
+    return state;
 }
