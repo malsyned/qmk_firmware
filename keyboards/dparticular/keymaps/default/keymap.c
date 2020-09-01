@@ -178,6 +178,30 @@ void matrix_scan_user(void) {
 }
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+    static bool shifted = false;
+    static bool shifted_8 = false;
+
+    switch (keycode) {
+        case KC_LSFT: case KC_RSFT:
+            shifted = record->event.pressed;
+            break;
+        case KC_P8:
+            if (record->event.pressed) {
+                if (shifted) {
+                    register_code(KC_PAST);
+                    shifted_8 = true;
+                    return false;
+                }
+            } else {
+                if (shifted_8) {
+                    unregister_code(KC_PAST);
+                    shifted_8 = false;
+                    return false;
+                }
+            }
+            break;
+    }
+
 	return true;
 }
 

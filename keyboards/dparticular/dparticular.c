@@ -13,6 +13,9 @@ void led_set_kb(uint8_t usb_led)
 
 bool process_record_kb(uint16_t keycode, keyrecord_t *record)
 {
+    if (!process_record_user(keycode, record))
+        return false;
+
     if (!numlock_state) {
         SEND_STRING(SS_DOWN(X_NUMLOCK) SS_DELAY(100) SS_UP(X_NUMLOCK));
         numlock_state = true;
