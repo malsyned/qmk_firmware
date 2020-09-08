@@ -220,7 +220,9 @@ static void update_leds(led_t led_state, bool num_layer_on)
     uint8_t val = rgblight_get_val();
 
     for (int i = 0; i < 3; i++) {
-        sethsv(hue, sat, states[i] ? val : val / 8, led + i);
+        sethsv(states[i] ? hue + 256 / 2 : hue,
+               sat,
+               states[i] ? val : val / 6, led + i);
     }
     rgblight_set();
 }
