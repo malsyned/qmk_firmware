@@ -161,6 +161,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 };
 
 void keyboard_post_init_user(void) {
+    rgblight_set_effect_range(0, 0);
     rgblight_enable();
 }
 
@@ -177,6 +178,34 @@ void matrix_init_user(void) {
 }
 
 void matrix_scan_user(void) {
+}
+
+static void update_leds(led_t led_state, bool num_layer_on)
+{
+    bool states[] = {
+        num_layer_on,
+        led_state.caps_lock,
+        led_state.scroll_lock
+    };
+    uint8_t hue = rgblight_get_hue();
+    uint8_t sat = rgblight_get_sat();
+    uint8_t val = rgblight_get_val();
+
+    uint8_t dhue = hue;
+    uint8_t dsat = sat;
+    uint8_t dval = val / 6;
+
+    uint8_t ahue = hue + 256 / 2;
+    uint8_t asat = sat;
+    uint8_t aval = val;
+
+    for (int i = 0; i < 3; i++) {
+        if (states[i])
+            sethsv(ahue, asat, aval, led + i);
+        else
+            sethsv(dhue, dsat, dval, led + i);
+    }
+    rgblight_set();
 }
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
@@ -202,29 +231,14 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 }
             }
             break;
+        case RGB_HUI: case RGB_HUD:
+        case RGB_SAI: case RGB_SAD:
+        case RGB_VAI: case RGB_VAD:
+            update_leds(host_keyboard_led_state(), IS_LAYER_ON(LAYER_NUM));
+            break;
     }
 
 	return true;
-}
-
-
-static void update_leds(led_t led_state, bool num_layer_on)
-{
-    bool states[] = {
-        num_layer_on,
-        led_state.caps_lock,
-        led_state.scroll_lock
-    };
-    uint8_t hue = rgblight_get_hue();
-    uint8_t sat = rgblight_get_sat();
-    uint8_t val = rgblight_get_val();
-
-    for (int i = 0; i < 3; i++) {
-        sethsv(states[i] ? hue + 256 / 2 : hue,
-               sat,
-               states[i] ? val : val / 6, led + i);
-    }
-    rgblight_set();
 }
 
 bool led_update_user(led_t led_state) {
