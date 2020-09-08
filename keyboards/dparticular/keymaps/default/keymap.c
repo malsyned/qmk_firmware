@@ -193,7 +193,7 @@ static void update_leds(led_t led_state, bool num_layer_on)
 
     uint8_t dhue = hue;
     uint8_t dsat = sat;
-    uint8_t dval = val / 6;
+    uint8_t dval = val / 2;
 
     uint8_t ahue = hue + 256 / 2;
     uint8_t asat = sat;
