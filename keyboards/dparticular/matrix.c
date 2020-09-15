@@ -106,7 +106,6 @@ static void init_pins(void) {
 }
 
 void matrix_init(void) {
-
     mcp23018_status = mcp23018_init();
 
     init_pins();
