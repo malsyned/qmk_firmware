@@ -85,4 +85,6 @@
 #define WS2812_SWAP_RG
 #endif
 
+#define PERMISSIVE_HOLD
+
 #endif
